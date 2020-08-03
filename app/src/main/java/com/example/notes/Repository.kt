@@ -9,75 +9,23 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 
-class Repository(application: Application) {
+class Repository(noteDb: NoteDb) {
 
-    private val noteDb = NoteDb.getDbInstance(application)
-    var noteDao: NoteDao = noteDb!!.noteDao()
-   // suspend fun listOfNotes() = noteDao.getAll()
+    private var noteDao: NoteDao = noteDb.noteDao()
 
-    fun insert(note: Note){
-        CoroutineScope(IO).launch {
-            addNote(noteDao, note)
-        }
-       // InsertTask(noteDao).execute(note)
-    }
+    suspend fun listOfNotes() = noteDao.getAll()
 
-    fun update(note: Note){
-        CoroutineScope(IO).launch {
-            updateNote(noteDao, note)
-        }
-      //  UpdateTask(noteDao).execute(note)
-    }
-
-    fun delete(note: Note){
-        CoroutineScope(IO).launch {
-            deleteNote(noteDao, note)
-        }
-       // DeleteTask(noteDao).execute(note)
-    }
-
-
-    private suspend fun addNote(noteDao: NoteDao, note: Note){
+    suspend fun insert(note: Note){
         noteDao.insert(note)
     }
 
-//    inner class InsertTask(private val noteDao: NoteDao): AsyncTask<Note, Void, Void>(){
-//
-//        override fun doInBackground(vararg params: Note): Void? {
-//            noteDao.insert(params[0])
-//            return null
-//        }
-//
-//
-//    }
-
-    private suspend fun updateNote(noteDao: NoteDao, note: Note){
+    suspend fun update(note: Note) {
         noteDao.update(note)
     }
 
-//       inner class UpdateTask(private val noteDao: NoteDao) : AsyncTask<Note, Void, Void>() {
-//
-//            override fun doInBackground(vararg params: Note): Void? {
-//                noteDao.update(params[0])
-//                return null
-//            }
-//
-//        }
-
-
-    private suspend fun deleteNote(noteDao: NoteDao, note: Note){
+    suspend fun delete(note: Note){
         noteDao.delete(note)
     }
-
-//        inner class DeleteTask(private val noteDao: NoteDao) : AsyncTask<Note, Void, Void>() {
-//
-//            override fun doInBackground(vararg params: Note): Void? {
-//                noteDao.delete(params[0])
-//                return null
-//            }
-//
-//        }
-
 
 
 

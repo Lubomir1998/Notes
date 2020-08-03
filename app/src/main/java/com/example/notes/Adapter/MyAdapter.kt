@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.notes.Database.Note
 import com.example.notes.R
 
-class MyAdapter(private var notesList: MutableList<Note>, private var itemCliclistener: OnItemClickListener): RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
+class MyAdapter(var notesList: List<Note>, private var itemClicklistener: OnItemClickListener): RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -23,7 +23,7 @@ class MyAdapter(private var notesList: MutableList<Note>, private var itemClicli
 
         holder.titleView.text = current.title
 
-        holder.open(current, itemCliclistener)
+        holder.open(current, itemClicklistener)
 
     }
 
@@ -31,7 +31,7 @@ class MyAdapter(private var notesList: MutableList<Note>, private var itemClicli
         return notesList[position]
     }
 
-    fun setNote(list: MutableList<Note>){
+    fun setNote(list: List<Note>){
         notesList = list
     }
 

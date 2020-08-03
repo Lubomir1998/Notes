@@ -1,33 +1,57 @@
 package com.example.notes.ViewModel
 
-import android.app.Application
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.notes.Database.Note
 import com.example.notes.Repository
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class NoteViewModel(application: Application): ViewModel(){
+class NoteViewModel: ViewModel(){
 
-    private val repository = Repository(application)
-    private val noteLiveData: MutableLiveData<MutableList<Note>> = MutableLiveData()
+    lateinit var repository: Repository
+    val noteLiveData: MutableLiveData<List<Note>> = MutableLiveData()
 
-//    init {
-//        CoroutineScope(Main).launch {
-//            noteLiveData.value = show()
-//        }
-//    }
 
-    fun getNotes(): MutableLiveData<MutableList<Note>>{
-        return noteLiveData
+    fun getAllNotesFromDB(){
+        viewModelScope.launch(Dispatchers.IO) {
+            withContext(Dispatchers.Main) {
+                noteLiveData.value = repository.listOfNotes()
+            }
+        }
+
     }
 
 
-//    private suspend fun show(): MutableList<Note>{
-//        return repository.listOfNotes()
-//    }
+
+    fun addNote(note: Note){
+        viewModelScope.launch(Dispatchers.IO) {
+            withContext(Dispatchers.Main) {
+                repository.insert(note)
+                getAllNotesFromDB()
+            }
+        }
+    }
+
+    fun updateNote(note: Note){
+        viewModelScope.launch(Dispatchers.IO) {
+            withContext(Dispatchers.Main) {
+                repository.update(note)
+                getAllNotesFromDB()
+            }
+        }
+    }
+
+    fun deleteNote(note: Note){
+        viewModelScope.launch(Dispatchers.IO) {
+            withContext(Dispatchers.Main) {
+                repository.delete(note)
+                getAllNotesFromDB()
+            }
+        }
+    }
+
 
 }

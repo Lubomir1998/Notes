@@ -7,15 +7,19 @@ import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import androidx.activity.viewModels
 import com.example.notes.Database.Note
+import com.example.notes.Database.NoteDb
 import com.example.notes.R
 import com.example.notes.Repository
+import com.example.notes.ViewModel.NoteViewModel
 import com.example.notes.databinding.ActivityAddNoteBinding
 
 class AddNote : AppCompatActivity() {
 
     private lateinit var binding: ActivityAddNoteBinding
-    private lateinit var repository: Repository
+
+    private val model: NoteViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,7 +32,7 @@ class AddNote : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = "Save note"
 
-        repository = Repository(application)
+        model.repository = Repository(NoteDb.getDbInstance(applicationContext)!!)
 
 
      // if we are updating the note the title and description fields are set with the text
@@ -56,12 +60,12 @@ class AddNote : AppCompatActivity() {
         if(noteId != -1) {
 
             if(title.isEmpty()){
-                Toast.makeText(this, "No title", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Please, enter a title!", Toast.LENGTH_SHORT).show()
             }
             else { // update the note
                 val no = Note(title, description)
                 no.id = noteId
-                repository.update(no)
+                model.updateNote(no)
                 Toast.makeText(this, "Note edited", Toast.LENGTH_SHORT).show()
                 startActivity(Intent(this, MainActivity::class.java))
             }
@@ -71,11 +75,11 @@ class AddNote : AppCompatActivity() {
         else{
 
             if (title.isEmpty()) {
-                Toast.makeText(this, "No title", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Please, enter a title!", Toast.LENGTH_SHORT).show()
             }
             else { // add the note
                 val n = Note(title, description)
-                repository.insert(n)
+                model.addNote(n)
                 Toast.makeText(this, "Note added", Toast.LENGTH_SHORT).show()
                 startActivity(Intent(this, MainActivity::class.java))
             }
