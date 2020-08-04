@@ -1,7 +1,6 @@
 package com.example.notes.Database
 
 import androidx.room.*
-import com.example.notes.Database.Note
 
 @Dao
 interface NoteDao {

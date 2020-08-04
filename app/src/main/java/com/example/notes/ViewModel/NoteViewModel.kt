@@ -1,8 +1,6 @@
 package com.example.notes.ViewModel
 
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.notes.Database.Note
 import com.example.notes.Repository
 import kotlinx.coroutines.Dispatchers
