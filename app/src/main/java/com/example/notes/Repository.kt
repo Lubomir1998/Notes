@@ -13,7 +13,7 @@ class Repository(noteDb: NoteDb) {
 
     private var noteDao: NoteDao = noteDb.noteDao()
 
-    suspend fun listOfNotes() = noteDao.getAll()
+    fun listOfNotes() = noteDao.getAll()
 
     suspend fun insert(note: Note){
         noteDao.insert(note)

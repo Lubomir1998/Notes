@@ -77,8 +77,6 @@ class MainActivity : AppCompatActivity() {
         }).attachToRecyclerView(binding.recyclerView)
 
 
-        model.getAllNotesFromDB()
-
         model.noteLiveData.observe(this, Observer {
             displayData(it)
         })
