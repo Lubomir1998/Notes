@@ -1,53 +1,58 @@
 package com.example.notes
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
+import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.notes.Database.Note
 import com.example.notes.Database.NoteDb
-import com.example.notes.ViewModel.NoteViewModel
+import kotlinx.coroutines.runBlocking
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mock
+import org.robolectric.RobolectricTestRunner
 
-@RunWith(AndroidJUnit4::class)
+@RunWith(RobolectricTestRunner::class)
 class MainActivityTest {
+
+    private lateinit var db: NoteDb
 
     @Rule @JvmField
     var instantExecutorRule = InstantTaskExecutorRule()
 
+    @Before
+    fun createDB(){
+        db = Room.inMemoryDatabaseBuilder(
+            ApplicationProvider.getApplicationContext(),
+            NoteDb::class.java)
+            .allowMainThreadQueries()
+            .build()
+    }
+
+    @After
+    fun closeDB(){
+        db.close()
+    }
+
+
     @Test
-    fun testInsertUpdateDelete() {
-            // initialize viewModel
-            val model = NoteViewModel()
-            model.repository = Repository(NoteDb.getDbInstance(ApplicationProvider.getApplicationContext())!!)
+    fun testInsertUpdateDelete() = runBlocking {
+        val note1 = Note("title", "d")
 
-            var list = emptyList<Note>()
+       // db.noteDao().insert(note1)
 
-            val observer = Observer<List<Note>> {
-                list = it
-            }
+        val value = db.noteDao().getNoteById(note1.id)
 
-            try
-            {
-                model.noteLiveData.observeForever(observer)
+//        assertEquals(value.id, note1.id)
 
-                model.getAllNotesFromDB()
+        assertEquals(db.noteDao().getAll().toString(), "asaf")
 
-                // add data
-                model.addNote(Note("t1", "d1"))
 
-                // check
-                assertEquals(list.size, 1)
 
-            } finally {
-                model.noteLiveData.removeObserver(observer)
-            }
+
         }
 
 
